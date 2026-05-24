@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,344 +7,61 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --navy: #1C5172;
-    --navy-dark: #143d55;
-    --navy-light: #22628a;
-    --gold: #C4A863;
-    --gold-light: #d4bc84;
-    --sky: #3DAEE1;
-    --white: #ffffff;
-    --off-white: #f7f8fa;
-    --border: rgba(28,81,114,0.12);
-    --text: #1a2530;
-    --text-muted: #5a7080;
-    --text-hint: #8fa5b2;
-    --success-bg: #e8f7f0;
-    --success-text: #0f6e56;
-    --radius: 10px;
-    --radius-lg: 16px;
+    --navy: #1C5172; --navy-dark: #143d55; --navy-light: #22628a;
+    --gold: #C4A863; --gold-light: #d4bc84; --sky: #3DAEE1;
+    --white: #ffffff; --off-white: #f7f8fa;
+    --border: rgba(28,81,114,0.12); --text: #1a2530;
+    --text-muted: #5a7080; --text-hint: #8fa5b2;
+    --success-bg: #e8f7f0; --success-text: #0f6e56;
+    --radius: 10px; --radius-lg: 16px;
   }
-
   html { font-size: 16px; -webkit-text-size-adjust: 100%; }
-
-  body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: var(--off-white);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0;
-  }
-
-  .page {
-    max-width: 520px;
-    margin: 0 auto;
-    padding: 24px 16px 48px;
-  }
-
-  /* Header */
-  .page-header {
-    background: var(--navy);
-    margin: -24px -16px 24px;
-    padding: 20px 20px 18px;
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  }
-
-  .header-top {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-  }
-
-  .seal {
-    width: 38px; height: 38px;
-    border: 1.5px solid var(--gold);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .seal svg { width: 20px; height: 20px; fill: var(--gold); }
-
-  .brand-name {
-    font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--gold);
-    text-transform: uppercase;
-  }
-
-  .page-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--white);
-    letter-spacing: -0.01em;
-    margin-bottom: 4px;
-  }
-
-  .page-subtitle {
-    font-size: 12px;
-    color: rgba(255,255,255,0.55);
-    letter-spacing: 0.04em;
-  }
-
-  .just-culture {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    background: rgba(196,168,99,0.12);
-    border: 1px solid rgba(196,168,99,0.25);
-    border-radius: var(--radius);
-    padding: 10px 12px;
-    margin-top: 12px;
-  }
-
-  .jc-icon {
-    font-size: 15px;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .jc-text {
-    font-size: 11px;
-    color: rgba(255,255,255,0.65);
-    line-height: 1.5;
-  }
-
-  .jc-text strong {
-    color: var(--gold-light);
-    font-weight: 500;
-  }
-
-  /* Cards */
-  .card {
-    background: var(--white);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 16px;
-    margin-bottom: 12px;
-  }
-
-  .card-label {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 14px;
-    padding-bottom: 10px;
-    border-bottom: 0.5px solid var(--border);
-  }
-
-  .card-label-icon {
-    width: 20px; height: 20px;
-    background: var(--navy);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .card-label-icon svg {
-    width: 11px; height: 11px;
-    fill: none;
-    stroke: var(--gold);
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .badge {
-    margin-left: auto;
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 10px;
-    background: var(--success-bg);
-    color: var(--success-text);
-    padding: 2px 7px;
-    border-radius: 20px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-  }
-
-  /* Fields */
+  body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--off-white); color: var(--text); min-height: 100vh; padding: 0; }
+  .page { max-width: 520px; margin: 0 auto; padding: 24px 16px 48px; }
+  .page-header { background: var(--navy); margin: -24px -16px 24px; padding: 20px 20px 18px; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+  .header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .seal { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .seal img { width: 42px; height: 42px; object-fit: contain; }
+  .brand-name { font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: var(--gold); text-transform: uppercase; }
+  .page-title { font-size: 20px; font-weight: 700; color: var(--white); letter-spacing: -0.01em; margin-bottom: 4px; }
+  .page-subtitle { font-size: 12px; color: rgba(255,255,255,0.55); letter-spacing: 0.04em; }
+  .just-culture { display: flex; align-items: flex-start; gap: 8px; background: rgba(196,168,99,0.12); border: 1px solid rgba(196,168,99,0.25); border-radius: var(--radius); padding: 10px 12px; margin-top: 12px; }
+  .jc-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .jc-text { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.5; }
+  .jc-text strong { color: var(--gold-light); font-weight: 500; }
+  .card { background: var(--white); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px; }
+  .card-label { display: flex; align-items: center; gap: 7px; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 0.5px solid var(--border); }
+  .card-label-icon { width: 20px; height: 20px; background: var(--navy); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .card-label-icon svg { width: 11px; height: 11px; fill: none; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .badge { margin-left: auto; display: inline-flex; align-items: center; gap: 3px; font-size: 10px; background: var(--success-bg); color: var(--success-text); padding: 2px 7px; border-radius: 20px; font-weight: 500; }
   .field { margin-bottom: 12px; }
   .field:last-child { margin-bottom: 0; }
-
-  .field label {
-    display: block;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-bottom: 5px;
-  }
-
-  .field input,
-  .field select,
-  .field textarea {
-    width: 100%;
-    height: 40px;
-    padding: 0 12px;
-    font-size: 14px;
-    font-family: inherit;
-    color: var(--text);
-    background: var(--off-white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    outline: none;
-    transition: border-color 0.15s, background 0.15s;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-
-  .field select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a7080' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 32px;
-  }
-
-  .field textarea {
-    height: 80px;
-    padding: 10px 12px;
-    resize: vertical;
-    line-height: 1.5;
-  }
-
-  .field input:focus,
-  .field select:focus,
-  .field textarea:focus {
-    border-color: var(--sky);
-    background: var(--white);
-    box-shadow: 0 0 0 3px rgba(61,174,225,0.1);
-  }
-
-  .field input::placeholder,
-  .field textarea::placeholder {
-    color: var(--text-hint);
-  }
-
-  .field-hint {
-    font-size: 11px;
-    color: var(--text-hint);
-    margin-top: 4px;
-    line-height: 1.4;
-  }
-
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  /* Divider */
-  .or-divider {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 4px 0 12px;
-    font-size: 11px;
-    color: var(--text-hint);
-  }
-
-  .or-divider::before,
-  .or-divider::after {
-    content: '';
-    flex: 1;
-    height: 0.5px;
-    background: var(--border);
-  }
-
-  /* Launch button */
-  .launch-btn {
-    width: 100%;
-    height: 52px;
-    background: var(--navy);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius-lg);
-    font-size: 15px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: background 0.15s, transform 0.1s;
-    margin-top: 4px;
-  }
-
+  .field label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; }
+  .field input, .field select, .field textarea { width: 100%; height: 40px; padding: 0 12px; font-size: 14px; font-family: inherit; color: var(--text); background: var(--off-white); border: 1px solid var(--border); border-radius: var(--radius); outline: none; transition: border-color 0.15s, background 0.15s; -webkit-appearance: none; appearance: none; }
+  .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a7080' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  .field input:focus, .field select:focus { border-color: var(--sky); background: var(--white); box-shadow: 0 0 0 3px rgba(61,174,225,0.1); }
+  .field input::placeholder { color: var(--text-hint); }
+  .field-hint { font-size: 11px; color: var(--text-hint); margin-top: 4px; line-height: 1.4; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .launch-btn { width: 100%; height: 52px; background: var(--navy); color: var(--white); border: none; border-radius: var(--radius-lg); font-size: 15px; font-family: 'Poppins', sans-serif; font-weight: 700; letter-spacing: 0.03em; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.15s, transform 0.1s; margin-top: 4px; }
   .launch-btn:hover { background: var(--navy-light); }
   .launch-btn:active { transform: scale(0.99); background: var(--navy-dark); }
-
-  .launch-btn svg {
-    width: 18px; height: 18px;
-    fill: none;
-    stroke: var(--gold);
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    flex-shrink: 0;
-  }
-
-  .launch-note {
-    font-size: 11px;
-    color: var(--text-hint);
-    text-align: center;
-    margin-top: 10px;
-    line-height: 1.6;
-  }
-
-  /* Footer */
-  .page-footer {
-    margin-top: 32px;
-    padding-top: 16px;
-    border-top: 0.5px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .footer-doc {
-    font-size: 10px;
-    color: var(--text-hint);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .footer-dot {
-    width: 6px; height: 6px;
-    background: var(--sky);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  @media (max-width: 400px) {
-    .two-col { grid-template-columns: 1fr; }
-    .page-title { font-size: 18px; }
-  }
+  .launch-btn svg { width: 18px; height: 18px; fill: none; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .launch-note { font-size: 11px; color: var(--text-hint); text-align: center; margin-top: 10px; line-height: 1.6; }
+  .page-footer { margin-top: 32px; padding-top: 16px; border-top: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .footer-doc { font-size: 10px; color: var(--text-hint); letter-spacing: 0.06em; text-transform: uppercase; }
+  .footer-dot { width: 6px; height: 6px; background: var(--sky); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  @media (max-width: 400px) { .two-col { grid-template-columns: 1fr; } .page-title { font-size: 18px; } }
 </style>
 </head>
 <body>
 <div class="page">
-
   <div class="page-header">
     <div class="header-top">
       <div class="seal">
-        <svg viewBox="0 0 20 20"><polygon points="10,1 12.9,7 19.5,7.6 14.8,11.9 16.4,18.4 10,15 3.6,18.4 5.2,11.9 0.5,7.6 7.1,7"/></svg>
+        <img src="AirSkyData_Symbol.png" alt="Airskydata" style="width:42px;height:42px;object-fit:contain;">
       </div>
       <span class="brand-name">Airskydata</span>
     </div>
@@ -356,8 +72,6 @@
       <span class="jc-text"><strong>Just-Culture protected.</strong> All reports are used to learn and improve, not to punish. Honest, timely reporting is protected.</span>
     </div>
   </div>
-
-  <!-- Mission data card -->
   <div class="card">
     <div class="card-label">
       <div class="card-label-icon">
@@ -366,62 +80,37 @@
       From Dronedesk mission
       <span class="badge">✓ copy from mission plan</span>
     </div>
-
     <div class="two-col">
-      <div class="field">
-        <label>Mission ID</label>
-        <input type="text" id="missionId" placeholder="DD-2026-XXXX">
-      </div>
-      <div class="field">
-        <label>Date of event</label>
-        <input type="date" id="dateEvent">
-      </div>
+      <div class="field"><label>Mission ID</label><input type="text" id="missionId" placeholder="DD-2026-XXXX"></div>
+      <div class="field"><label>Date of event</label><input type="date" id="dateEvent"></div>
     </div>
-
-    <div class="field">
-      <label>Location / site name</label>
-      <input type="text" id="location" placeholder="e.g. Port Everglades Terminal 18">
-    </div>
-
+    <div class="field"><label>Location / site name</label><input type="text" id="location" placeholder="e.g. Port Everglades Terminal 18"></div>
     <div class="field">
       <label>GPS coordinates</label>
       <input type="text" id="gps" placeholder="26.093335, -80.112907">
       <div class="field-hint">Latitude, Longitude — copy from Dronedesk map or phone Maps app</div>
     </div>
-
     <div class="two-col">
       <div class="field">
         <label>Aircraft involved</label>
         <select id="aircraft">
           <option value="">Select aircraft</option>
-          <option>DJI Matrice 4E</option>
-          <option>DJI Matrice 4T</option>
-          <option>Autel EVO Max 4T</option>
-          <option>Autel EVO Max 4T XE</option>
-          <option>Autel EVO Max 4N</option>
-          <option>Anzu Raptor RTK</option>
-          <option>DJI Mini 4 Pro</option>
-          <option>DJI Avata 2</option>
-          <option>Other</option>
+          <option>DJI Matrice 4E</option><option>DJI Matrice 4T</option>
+          <option>Autel EVO Max 4T</option><option>Autel EVO Max 4T XE</option>
+          <option>Autel EVO Max 4N</option><option>Anzu Raptor RTK</option>
+          <option>DJI Mini 4 Pro</option><option>DJI Avata 2</option><option>Other</option>
         </select>
-        
       </div>
       <div class="field">
         <label>Operating area</label>
         <select id="opArea">
           <option value="">Select</option>
-          <option>Controlled airspace</option>
-          <option>Class G</option>
-          <option>Standard daylight VLOS</option>
-          <option>Maritime</option>
-          <option>Over people</option>
-          <option>Night ops</option>
-          <option>BVLOS</option>
-          <option>Other</option>
+          <option>Controlled airspace</option><option>Class G</option>
+          <option>Standard daylight VLOS</option><option>Maritime</option>
+          <option>Over people</option><option>Night ops</option><option>BVLOS</option><option>Other</option>
         </select>
       </div>
     </div>
-
     <div class="two-col">
       <div class="field">
         <label>Phase of flight</label>
@@ -444,8 +133,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Reporter card -->
   <div class="card">
     <div class="card-label">
       <div class="card-label-icon">
@@ -453,20 +140,11 @@
       </div>
       Reporter
     </div>
-
     <div class="two-col">
-      <div class="field">
-        <label>Full legal name</label>
-        <input type="text" id="reportedBy" placeholder="First Middle Last">
-      </div>
-      <div class="field">
-        <label>Mobile number</label>
-        <input type="tel" id="reporterPhone" placeholder="954-555-0100">
-      </div>
+      <div class="field"><label>Full legal name</label><input type="text" id="reportedBy" placeholder="First Middle Last"></div>
+      <div class="field"><label>Mobile number</label><input type="tel" id="reporterPhone" placeholder="954-555-0100"></div>
     </div>
   </div>
-
-  <!-- Incident card -->
   <div class="card">
     <div class="card-label">
       <div class="card-label-icon">
@@ -474,59 +152,39 @@
       </div>
       About the incident
     </div>
-
-    <div class="field">
-      <label>Event title (short descriptor)</label>
-      <input type="text" id="title" placeholder="e.g. Bird strike during cruise phase">
-    </div>
-
+    <div class="field"><label>Event title (short descriptor)</label><input type="text" id="title" placeholder="e.g. Bird strike during cruise phase"></div>
     <div class="field">
       <label>ICAO classification</label>
       <select id="icao">
         <option value="">Select classification</option>
-        <option>Hazard</option>
-        <option>Safety Observation</option>
-        <option>Near-Miss</option>
-        <option>Occurrence</option>
-        <option>Incident</option>
-        <option>Accident</option>
+        <option>Hazard</option><option>Safety Observation</option><option>Near-Miss</option>
+        <option>Occurrence</option><option>Incident</option><option>Accident</option>
       </select>
     </div>
-
     <div class="field">
       <label>Severity tier</label>
       <select id="severity">
         <option value="">Select severity</option>
-        <option>S1 — Negligible</option>
-        <option>S2 — Minor</option>
-        <option>S3 — Major</option>
-        <option>S4 — Hazardous</option>
-        <option>S5 — Catastrophic</option>
+        <option>S1 — Negligible</option><option>S2 — Minor</option><option>S3 — Major</option>
+        <option>S4 — Hazardous</option><option>S5 — Catastrophic</option>
       </select>
     </div>
   </div>
-
   <button class="launch-btn" onclick="openForm()">
     <svg viewBox="0 0 18 18"><path d="M10 3h5v5"/><path d="M15 3L8 10"/><path d="M8 4H4a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1v-4"/></svg>
     Open pre-filled form
   </button>
-
   <p class="launch-note">Opens the Airskydata Safety Event Report in a new tab.<br>Review all fields carefully before submitting.</p>
-
   <div class="page-footer">
     <span class="footer-doc">ASD-SMS-FRC-001 v1.2 &nbsp;·&nbsp; airskydata.com/report</span>
     <div class="footer-dot"></div>
   </div>
-
 </div>
-
 <script>
   document.getElementById("dateEvent").valueAsDate = new Date();
-
   function openForm() {
     var base = "https://airskydata.notion.site/737f3147b067494e80d3f1715db28d32?pvs=105";
     var params = new URLSearchParams();
-
     var fields = {
       "Event Title (short)": document.getElementById("title").value.trim(),
       "Mission ID": document.getElementById("missionId").value.trim(),
@@ -542,11 +200,7 @@
       "Reported By": document.getElementById("reportedBy").value.trim(),
       "Reporter Mobile": document.getElementById("reporterPhone").value.trim()
     };
-
-    Object.entries(fields).forEach(function(pair) {
-      if (pair[1]) params.set(pair[0], pair[1]);
-    });
-
+    Object.entries(fields).forEach(function(pair) { if (pair[1]) params.set(pair[0], pair[1]); });
     window.open(base + "&" + params.toString(), "_blank");
   }
 </script>
