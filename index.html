@@ -1,720 +1,207 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Airskydata — Safety Event Launcher</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --navy: #1C5172;
-    --navy-dark: #153d57;
-    --navy-light: #2a6a94;
-    --gold: #C4A863;
-    --gold-light: #d4bc83;
-    --sky: #3DAEE1;
-    --white: #ffffff;
-    --bg: #f0f4f8;
-    --surface: #ffffff;
-    --border: #d1dce6;
-    --text: #1a2a35;
-    --text-secondary: #4a6070;
-    --text-hint: #8aa0b0;
-    --red: #e05252;
-    --green: #2e9e6b;
-    --radius: 10px;
-    --radius-sm: 6px;
+    --navy: #1C5172; --navy-dark: #143d55; --navy-light: #22628a;
+    --gold: #C4A863; --gold-light: #d4bc84; --sky: #3DAEE1;
+    --white: #ffffff; --off-white: #f7f8fa;
+    --border: rgba(28,81,114,0.12); --text: #1a2530;
+    --text-muted: #5a7080; --text-hint: #8fa5b2;
+    --success-bg: #e8f7f0; --success-text: #0f6e56;
+    --radius: 10px; --radius-lg: 16px;
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0 0 48px 0;
-  }
-
-  /* HEADER */
-  .page-header {
-    background: var(--navy);
-    padding: 20px 20px 24px;
-    position: relative;
-    overflow: hidden;
-  }
-  .page-header::before {
-    content: '';
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(61,174,225,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .header-top {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-  .seal img { width: 38px; height: 38px; object-fit: contain; }
-  .brand-name {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: var(--gold);
-    text-transform: uppercase;
-  }
-  .page-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 4px;
-    letter-spacing: -0.3px;
-  }
-  .page-subtitle {
-    font-size: 12px;
-    color: rgba(255,255,255,0.55);
-    letter-spacing: 0.04em;
-  }
-  .just-culture {
-    margin-top: 14px;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(196,168,99,0.25);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-  }
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+  body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--off-white); color: var(--text); min-height: 100vh; padding: 0; }
+  .page { max-width: 520px; margin: 0 auto; padding: 24px 16px 48px; }
+  .page-header { background: var(--navy); margin: -24px -16px 24px; padding: 20px 20px 18px; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+  .header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .seal { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .seal img { width: 42px; height: 42px; object-fit: contain; }
+  .brand-name { font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: var(--gold); text-transform: uppercase; }
+  .page-title { font-size: 20px; font-weight: 700; color: var(--white); letter-spacing: -0.01em; margin-bottom: 4px; }
+  .page-subtitle { font-size: 12px; color: rgba(255,255,255,0.55); letter-spacing: 0.04em; }
+  .just-culture { display: flex; align-items: flex-start; gap: 8px; background: rgba(196,168,99,0.12); border: 1px solid rgba(196,168,99,0.25); border-radius: var(--radius); padding: 10px 12px; margin-top: 12px; }
   .jc-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
-  .jc-text { font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.5; }
-  .jc-text strong { color: var(--gold); font-weight: 600; }
-
-  /* FORM BODY */
-  .form-body { padding: 16px; max-width: 640px; margin: 0 auto; }
-
-  /* SECTION CARDS */
-  .section-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 12px;
-    overflow: hidden;
-  }
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--border);
-    background: #f7fafc;
-  }
-  .section-icon {
-    width: 28px; height: 28px;
-    border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px;
-    flex-shrink: 0;
-  }
-  .icon-mission { background: #e8f4fd; }
-  .icon-reporter { background: #e8f5ee; }
-  .icon-incident { background: #fff8e8; }
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-  }
-  .section-fields { padding: 14px; }
-
-  /* FIELDS */
-  .field { margin-bottom: 14px; }
+  .jc-text { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.5; }
+  .jc-text strong { color: var(--gold-light); font-weight: 500; }
+  .card { background: var(--white); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px; }
+  .card-label { display: flex; align-items: center; gap: 7px; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 0.5px solid var(--border); }
+  .card-label-icon { width: 20px; height: 20px; background: var(--navy); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .card-label-icon svg { width: 11px; height: 11px; fill: none; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .badge { margin-left: auto; display: inline-flex; align-items: center; gap: 3px; font-size: 10px; background: var(--success-bg); color: var(--success-text); padding: 2px 7px; border-radius: 20px; font-weight: 500; }
+  .field { margin-bottom: 12px; }
   .field:last-child { margin-bottom: 0; }
-  .field label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 5px;
-    letter-spacing: 0.01em;
-  }
-  .field label .req { color: var(--red); margin-left: 2px; }
-  .field input,
-  .field select,
-  .field textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    color: var(--text);
-    background: var(--white);
-    transition: border-color 0.15s, box-shadow 0.15s;
-    -webkit-appearance: none;
-    appearance: none;
-    font-family: inherit;
-  }
-  .field input:focus,
-  .field select:focus,
-  .field textarea:focus {
-    outline: none;
-    border-color: var(--sky);
-    box-shadow: 0 0 0 3px rgba(61,174,225,0.12);
-  }
-  .field input.error,
-  .field select.error,
-  .field textarea.error {
-    border-color: var(--red);
-  }
-  .field input::placeholder,
-  .field textarea::placeholder { color: var(--text-hint); }
-  .field textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
-  .field-hint { font-size: 11px; color: var(--text-hint); margin-top: 4px; }
-  .field-error { font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
-  .field-error.visible { display: block; }
-
-  /* SELECT wrapper for chevron */
-  .select-wrap { position: relative; }
-  .select-wrap select { padding-right: 32px; }
-  .select-wrap::after {
-    content: '';
-    position: absolute;
-    right: 12px; top: 50%;
-    transform: translateY(-50%);
-    width: 0; height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 6px solid var(--text-hint);
-    pointer-events: none;
-  }
-
-  /* TWO-COL GRID */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  /* SEVERITY BUTTONS */
-  .severity-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-  }
-  .sev-btn {
-    padding: 8px 4px;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--white);
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.15s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .sev-btn .sev-code {
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    margin-bottom: 2px;
-  }
-  .sev-btn .sev-label {
-    display: block;
-    font-size: 9px;
-    color: var(--text-hint);
-    line-height: 1.2;
-  }
-  .sev-btn[data-sev="S1"] .sev-code { color: #6b7280; }
-  .sev-btn[data-sev="S2"] .sev-code { color: #3b82f6; }
-  .sev-btn[data-sev="S3"] .sev-code { color: #f59e0b; }
-  .sev-btn[data-sev="S4"] .sev-code { color: #ef4444; }
-  .sev-btn[data-sev="S5"] .sev-code { color: #7c3aed; }
-
-  .sev-btn.active[data-sev="S1"] { background: #f3f4f6; border-color: #6b7280; }
-  .sev-btn.active[data-sev="S2"] { background: #eff6ff; border-color: #3b82f6; }
-  .sev-btn.active[data-sev="S3"] { background: #fffbeb; border-color: #f59e0b; }
-  .sev-btn.active[data-sev="S4"] { background: #fef2f2; border-color: #ef4444; }
-  .sev-btn.active[data-sev="S5"] { background: #f5f3ff; border-color: #7c3aed; }
-
-  /* SUBMIT BUTTON */
-  .submit-wrap { padding: 4px 0 8px; }
-  .submit-btn {
-    width: 100%;
-    height: 52px;
-    background: var(--navy);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius);
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background 0.15s, transform 0.1s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .submit-btn:hover { background: var(--navy-light); }
-  .submit-btn:active { transform: scale(0.99); background: var(--navy-dark); }
-  .submit-btn svg { width: 18px; height: 18px; fill: none; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-  .submit-btn.loading { opacity: 0.7; pointer-events: none; }
-
-  .launch-note {
-    font-size: 11px;
-    color: var(--text-hint);
-    text-align: center;
-    margin-top: 10px;
-    line-height: 1.6;
-  }
-
-  /* FOOTER */
-  .page-footer {
-    margin-top: 32px;
-    padding-top: 16px;
-    border-top: 0.5px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  .field label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; }
+  .field input, .field select, .field textarea { width: 100%; height: 40px; padding: 0 12px; font-size: 14px; font-family: inherit; color: var(--text); background: var(--off-white); border: 1px solid var(--border); border-radius: var(--radius); outline: none; transition: border-color 0.15s, background 0.15s; -webkit-appearance: none; appearance: none; }
+  .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a7080' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  .field input:focus, .field select:focus { border-color: var(--sky); background: var(--white); box-shadow: 0 0 0 3px rgba(61,174,225,0.1); }
+  .field input::placeholder { color: var(--text-hint); }
+  .field-hint { font-size: 11px; color: var(--text-hint); margin-top: 4px; line-height: 1.4; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .launch-btn { width: 100%; height: 52px; background: var(--navy); color: var(--white); border: none; border-radius: var(--radius-lg); font-size: 15px; font-family: 'Poppins', sans-serif; font-weight: 700; letter-spacing: 0.03em; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.15s, transform 0.1s; margin-top: 4px; }
+  .launch-btn:hover { background: var(--navy-light); }
+  .launch-btn:active { transform: scale(0.99); background: var(--navy-dark); }
+  .launch-btn svg { width: 18px; height: 18px; fill: none; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .launch-note { font-size: 11px; color: var(--text-hint); text-align: center; margin-top: 10px; line-height: 1.6; }
+  .page-footer { margin-top: 32px; padding-top: 16px; border-top: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .footer-doc { font-size: 10px; color: var(--text-hint); letter-spacing: 0.06em; text-transform: uppercase; }
   .footer-dot { width: 6px; height: 6px; background: var(--sky); border-radius: 50%; animation: pulse 2s infinite; }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  /* SUCCESS STATE */
-  .success-screen {
-    display: none;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 32px 24px;
-    text-align: center;
-    margin-bottom: 12px;
-  }
-  .success-screen.visible { display: block; }
-  .success-icon { font-size: 48px; margin-bottom: 16px; }
-  .success-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
-  .success-id { font-size: 13px; font-weight: 600; color: var(--sky); margin-bottom: 8px; font-family: monospace; }
-  .success-msg { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; }
-  .new-report-btn {
-    padding: 10px 24px;
-    background: var(--navy);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  /* ERROR BANNER */
-  .error-banner {
-    display: none;
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    font-size: 12px;
-    color: var(--red);
-    margin-bottom: 12px;
-    line-height: 1.5;
-  }
-  .error-banner.visible { display: block; }
-
-  @media (max-width: 400px) {
-    .two-col { grid-template-columns: 1fr; }
-    .page-title { font-size: 19px; }
-    .severity-grid { grid-template-columns: repeat(5, 1fr); }
-    .sev-btn .sev-label { display: none; }
-  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  @media (max-width: 400px) { .two-col { grid-template-columns: 1fr; } .page-title { font-size: 18px; } }
 </style>
 </head>
 <body>
-
-<div class="page-header">
-  <div class="header-top">
-    <div class="seal">
-      <img src="AirSkyData_Symbol.png" alt="Airskydata" style="width:38px;height:38px;object-fit:contain;">
+<div class="page">
+  <div class="page-header">
+    <div class="header-top">
+      <div class="seal">
+        <img src="AirSkyData_Symbol.png" alt="Airskydata" style="width:42px;height:42px;object-fit:contain;">
+      </div>
+      <span class="brand-name">Airskydata</span>
     </div>
-    <span class="brand-name">Airskydata</span>
-  </div>
-  <div class="page-title">Safety Event Report</div>
-  <div class="page-subtitle">ASD-SMS-FRC-001 &nbsp;·&nbsp; Field submission form</div>
-  <div class="just-culture">
-    <span class="jc-icon">⚖️</span>
-    <span class="jc-text"><strong>Just-Culture protected.</strong> All reports are used to learn and improve, not to punish. Honest, timely reporting is protected.</span>
-  </div>
-</div>
-
-<div class="form-body">
-
-  <div class="error-banner" id="errorBanner"></div>
-
-  <!-- SUCCESS SCREEN -->
-  <div class="success-screen" id="successScreen">
-    <div class="success-icon">✅</div>
-    <div class="success-title">Report Submitted</div>
-    <div class="success-id" id="successId"></div>
-    <div class="success-msg">Your safety event has been logged in the SMS Incident &amp; Hazard Register. The Chief Remote Pilot will review and assign a record ID.</div>
-    <button class="new-report-btn" onclick="resetForm()">Submit Another Report</button>
-  </div>
-
-  <!-- MISSION INFO -->
-  <div class="section-card" id="formContent">
-    <div class="section-header">
-      <div class="section-icon icon-mission">📋</div>
-      <span class="section-label">Mission Information</span>
+    <div class="page-title">Safety Event Report</div>
+    <div class="page-subtitle">ASD-SMS-FRC-001 &nbsp;·&nbsp; Pre-fill launcher</div>
+    <div class="just-culture">
+      <span class="jc-icon">⚖️</span>
+      <span class="jc-text"><strong>Just-Culture protected.</strong> All reports are used to learn and improve, not to punish. Honest, timely reporting is protected.</span>
     </div>
-    <div class="section-fields">
-      <div class="two-col">
-        <div class="field">
-          <label>Mission ID</label>
-          <input type="text" id="missionId" placeholder="DD-2026-XXXX">
-        </div>
-        <div class="field">
-          <label>Date of Event <span class="req">*</span></label>
-          <input type="date" id="dateOfEvent">
-        </div>
+  </div>
+  <div class="card">
+    <div class="card-label">
+      <div class="card-label-icon">
+        <svg viewBox="0 0 14 14"><rect x="2" y="1" width="10" height="12" rx="1"/><line x1="4" y1="4" x2="10" y2="4"/><line x1="4" y1="7" x2="10" y2="7"/><line x1="4" y1="10" x2="7" y2="10"/></svg>
+      </div>
+      From Dronedesk mission
+      <span class="badge">✓ copy from mission plan</span>
+    </div>
+    <div class="two-col">
+      <div class="field"><label>Mission ID</label><input type="text" id="missionId" placeholder="DD-2026-XXXX"></div>
+      <div class="field"><label>Date of event</label><input type="date" id="dateEvent"></div>
+    </div>
+    <div class="field"><label>Location / site name</label><input type="text" id="location" placeholder="e.g. Port Everglades Terminal 18"></div>
+    <div class="field">
+      <label>GPS coordinates</label>
+      <input type="text" id="gps" placeholder="26.093335, -80.112907">
+      <div class="field-hint">Latitude, Longitude — copy from Dronedesk map or phone Maps app</div>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>Aircraft involved</label>
+        <select id="aircraft">
+          <option value="">Select aircraft</option>
+          <option>DJI Matrice 4E</option><option>DJI Matrice 4T</option>
+          <option>Autel EVO Max 4T</option><option>Autel EVO Max 4T XE</option>
+          <option>Autel EVO Max 4N</option><option>Anzu Raptor RTK</option>
+          <option>DJI Mini 4 Pro</option><option>DJI Avata 2</option><option>Other</option>
+        </select>
       </div>
       <div class="field">
-        <label>Location / Site Name</label>
-        <input type="text" id="location" placeholder="e.g. Port Everglades Terminal 18">
+        <label>Operating area</label>
+        <select id="opArea">
+          <option value="">Select</option>
+          <option>Controlled airspace</option><option>Class G</option>
+          <option>Standard daylight VLOS</option><option>Maritime</option>
+          <option>Over people</option><option>Night ops</option><option>BVLOS</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>Phase of flight</label>
+        <select id="phase">
+          <option value="">Select</option>
+          <option>STD (Standing)- idle propellers</option>
+          <option>TOF (Takeoff)- ground to airborn</option>
+          <option>ICL (Initial Climb)- ascent to task altitude</option>
+          <option>ENR- cruising to task area</option>
+          <option>MNV (Manuevering)- payload capture</option>
+          <option>APR (Approach)- task area to landing area</option>
+          <option>LDG (Landing)- descent toward pad</option>
+          <option>not applicable- explain in additional notes</option>
+        </select>
       </div>
       <div class="field">
-        <label>GPS Coordinates</label>
-        <input type="text" id="gps" placeholder="26.093335, -80.112907">
-        <div class="field-hint">Latitude, Longitude — copy from Dronedesk map or phone Maps app</div>
-      </div>
-      <div class="two-col">
-        <div class="field">
-          <label>Aircraft Involved</label>
-          <div class="select-wrap">
-            <select id="aircraft">
-              <option value="">Select aircraft</option>
-              <option>DJI Matrice 4E</option>
-              <option>Autel EVO Max 4T XE</option>
-              <option>Anzu Raptor RTK</option>
-              <option>DJI Mini 4 Pro</option>
-              <option>DJI Avata 2</option>
-              <option>Other</option>
-            </select>
-          </div>
-        </div>
-        <div class="field">
-          <label>Operating Area</label>
-          <div class="select-wrap">
-            <select id="opArea">
-              <option value="">Select</option>
-              <option>Controlled airspace</option>
-              <option>Class G</option>
-              <option>Standard daylight VLOS</option>
-              <option>Maritime</option>
-              <option>Over people</option>
-              <option>Night ops</option>
-              <option>BVLOS</option>
-              <option>Other</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="two-col">
-        <div class="field">
-          <label>Phase of Flight</label>
-          <div class="select-wrap">
-            <select id="phase">
-              <option value="">Select</option>
-              <option value="STD (Standing)- idle propellers">STD — Standing</option>
-              <option value="TOF (Takeoff)- ground to airborn">TOF — Takeoff</option>
-              <option value="ICL (Initial Climb)- ascent to task altitude">ICL — Initial Climb</option>
-              <option value="ENR- cruising to task area">ENR — En Route</option>
-              <option value="MNV (Manuevering)- payload capture">MNV — Maneuvering</option>
-              <option value="APR (Approach)- task area to landing area">APR — Approach</option>
-              <option value="LDG (Landing)- descent toward pad">LDG — Landing</option>
-              <option value="not applicable- explain in additional notes">N/A</option>
-            </select>
-          </div>
-        </div>
-        <div class="field">
-          <label>Weather Conditions</label>
-          <input type="text" id="weather" placeholder="Wind, VIS, ceiling, temp">
-          <div class="field-hint">From Dronedesk pre-flight section</div>
-        </div>
+        <label>Weather conditions</label>
+        <input type="text" id="weather" placeholder="Wind, VIS, ceiling, temp">
+        <div class="field-hint">From Dronedesk pre-flight section</div>
       </div>
     </div>
   </div>
-
-  <!-- REPORTER -->
-  <div class="section-card">
-    <div class="section-header">
-      <div class="section-icon icon-reporter">👤</div>
-      <span class="section-label">Reporter</span>
-    </div>
-    <div class="section-fields">
-      <div class="two-col">
-        <div class="field">
-          <label>Full Legal Name <span class="req">*</span></label>
-          <input type="text" id="reportedBy" placeholder="First Middle Last">
-          <div class="field-error" id="reportedByError">Required</div>
-        </div>
-        <div class="field">
-          <label>Mobile Number <span class="req">*</span></label>
-          <input type="tel" id="reporterMobile" placeholder="954-555-0100">
-          <div class="field-error" id="reporterMobileError">Required</div>
-        </div>
+  <div class="card">
+    <div class="card-label">
+      <div class="card-label-icon">
+        <svg viewBox="0 0 14 14"><circle cx="7" cy="4" r="2.5"/><path d="M2 12c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg>
       </div>
+      Reporter
+    </div>
+    <div class="two-col">
+      <div class="field"><label>Full legal name</label><input type="text" id="reportedBy" placeholder="First Middle Last"></div>
+      <div class="field"><label>Mobile number</label><input type="tel" id="reporterPhone" placeholder="954-555-0100"></div>
     </div>
   </div>
-
-  <!-- INCIDENT -->
-  <div class="section-card">
-    <div class="section-header">
-      <div class="section-icon icon-incident">⚠️</div>
-      <span class="section-label">About the Incident</span>
+  <div class="card">
+    <div class="card-label">
+      <div class="card-label-icon">
+        <svg viewBox="0 0 14 14"><path d="M7 1L1 12h12L7 1z"/><line x1="7" y1="6" x2="7" y2="8.5"/><circle cx="7" cy="10.5" r="0.5" fill="var(--gold)"/></svg>
+      </div>
+      About the incident
     </div>
-    <div class="section-fields">
-      <div class="field">
-        <label>Event Title (short descriptor) <span class="req">*</span></label>
-        <input type="text" id="eventTitle" placeholder="e.g. Bird strike during cruise phase">
-        <div class="field-error" id="eventTitleError">Required</div>
-      </div>
-      <div class="two-col">
-        <div class="field">
-          <label>ICAO Classification <span class="req">*</span></label>
-          <div class="select-wrap">
-            <select id="icaoClass">
-              <option value="">Select</option>
-              <option>Hazard</option>
-              <option>Safety Observation</option>
-              <option>Near-Miss</option>
-              <option>Occurrence</option>
-              <option>Incident</option>
-              <option>Accident</option>
-            </select>
-          </div>
-          <div class="field-error" id="icaoClassError">Required</div>
-        </div>
-        <div class="field">
-          <label>Severity Tier <span class="req">*</span></label>
-          <div class="severity-grid" id="severityGrid">
-            <button type="button" class="sev-btn" data-sev="S1" onclick="selectSeverity('S1 — Negligible')">
-              <span class="sev-code">S1</span>
-              <span class="sev-label">Negligible</span>
-            </button>
-            <button type="button" class="sev-btn" data-sev="S2" onclick="selectSeverity('S2 — Minor')">
-              <span class="sev-code">S2</span>
-              <span class="sev-label">Minor</span>
-            </button>
-            <button type="button" class="sev-btn" data-sev="S3" onclick="selectSeverity('S3 — Major')">
-              <span class="sev-code">S3</span>
-              <span class="sev-label">Major</span>
-            </button>
-            <button type="button" class="sev-btn" data-sev="S4" onclick="selectSeverity('S4 — Hazardous')">
-              <span class="sev-code">S4</span>
-              <span class="sev-label">Hazardous</span>
-            </button>
-            <button type="button" class="sev-btn" data-sev="S5" onclick="selectSeverity('S5 — Catastrophic')">
-              <span class="sev-code">S5</span>
-              <span class="sev-label">Catastrophic</span>
-            </button>
-          </div>
-          <div class="field-error" id="severityError">Select a severity tier</div>
-        </div>
-      </div>
-      <div class="field">
-        <label>Event Narrative <span class="req">*</span></label>
-        <textarea id="narrative" placeholder="Factual account of what happened. No blame language. What did you observe?"></textarea>
-        <div class="field-error" id="narrativeError">Required</div>
-      </div>
-      <div class="field">
-        <label>Immediate Action Taken</label>
-        <textarea id="immediateAction" placeholder="Actions taken at the time of the event..." style="min-height:70px;"></textarea>
-      </div>
-      <div class="field">
-        <label>Crew Involved</label>
-        <input type="text" id="crew" placeholder="List all full names of personnel in the area">
-      </div>
+    <div class="field"><label>Event title (short descriptor)</label><input type="text" id="title" placeholder="e.g. Bird strike during cruise phase"></div>
+    <div class="field">
+      <label>ICAO classification</label>
+      <select id="icao">
+        <option value="">Select classification</option>
+        <option>Hazard</option><option>Safety Observation</option><option>Near-Miss</option>
+        <option>Occurrence</option><option>Incident</option><option>Accident</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Severity tier</label>
+      <select id="severity">
+        <option value="">Select severity</option>
+        <option>S1 — Negligible</option><option>S2 — Minor</option><option>S3 — Major</option>
+        <option>S4 — Hazardous</option><option>S5 — Catastrophic</option>
+      </select>
     </div>
   </div>
-
-  <div class="submit-wrap">
-    <button class="submit-btn" id="submitBtn" onclick="submitReport()">
-      <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
-      Submit Safety Report
-    </button>
-    <div class="launch-note">Submits directly to SMS Incident &amp; Hazard Register (ASD-SMS-REG-001)<br>Just-Culture protected · Notion database secured</div>
-  </div>
-
+  <button class="launch-btn" onclick="openForm()">
+    <svg viewBox="0 0 18 18"><path d="M10 3h5v5"/><path d="M15 3L8 10"/><path d="M8 4H4a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1v-4"/></svg>
+    Open pre-filled form
+  </button>
+  <p class="launch-note">Opens the Airskydata Safety Event Report in a new tab.<br>Review all fields carefully before submitting.</p>
   <div class="page-footer">
-    <span class="footer-doc">ASD-SMS-FRC-001 v2.0</span>
+    <span class="footer-doc">ASD-SMS-FRC-001 v1.2 &nbsp;·&nbsp; airskydata.com/report</span>
     <div class="footer-dot"></div>
-    <span class="footer-doc">Airskydata LLC</span>
   </div>
-
 </div>
-
 <script>
-  let selectedSeverity = '';
-
-  // Set today's date as default
-  document.addEventListener('DOMContentLoaded', () => {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('dateOfEvent').value = today;
-  });
-
-  function selectSeverity(val) {
-    selectedSeverity = val;
-    const code = val.split(' ')[0]; // "S1", "S2", etc.
-    document.querySelectorAll('.sev-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.sev === code);
-    });
-    document.getElementById('severityError').classList.remove('visible');
-  }
-
-  function validate() {
-    let valid = true;
-    const required = [
-      { id: 'reportedBy', errId: 'reportedByError' },
-      { id: 'reporterMobile', errId: 'reporterMobileError' },
-      { id: 'eventTitle', errId: 'eventTitleError' },
-      { id: 'icaoClass', errId: 'icaoClassError' },
-      { id: 'narrative', errId: 'narrativeError' },
-    ];
-    required.forEach(({ id, errId }) => {
-      const el = document.getElementById(id);
-      const err = document.getElementById(errId);
-      if (!el.value.trim()) {
-        el.classList.add('error');
-        err.classList.add('visible');
-        valid = false;
-      } else {
-        el.classList.remove('error');
-        err.classList.remove('visible');
-      }
-    });
-    if (!selectedSeverity) {
-      document.getElementById('severityError').classList.add('visible');
-      valid = false;
-    }
-    if (!document.getElementById('dateOfEvent').value) {
-      document.getElementById('dateOfEvent').classList.add('error');
-      valid = false;
-    }
-    return valid;
-  }
-
-  async function submitReport() {
-    if (!validate()) {
-      document.getElementById('errorBanner').textContent = 'Please fill in all required fields before submitting.';
-      document.getElementById('errorBanner').classList.add('visible');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
-    document.getElementById('errorBanner').classList.remove('visible');
-    const btn = document.getElementById('submitBtn');
-    btn.classList.add('loading');
-    btn.innerHTML = `<span>Submitting…</span>`;
-
-    const dateVal = document.getElementById('dateOfEvent').value;
-    const properties = {
-      "Event Title (short)": {
-        title: [{ text: { content: document.getElementById('eventTitle').value.trim() } }]
-      },
-      "Mission ID": {
-        rich_text: [{ text: { content: document.getElementById('missionId').value.trim() } }]
-      },
-      "Date of Event": {
-        date: { start: dateVal }
-      },
-      "GPS Coordinates": {
-        rich_text: [{ text: { content: document.getElementById('gps').value.trim() } }]
-      },
-      "Event Narrative": {
-        rich_text: [{ text: { content: document.getElementById('narrative').value.trim() } }]
-      },
-      "Reported By": {
-        rich_text: [{ text: { content: document.getElementById('reportedBy').value.trim() } }]
-      },
-      "Reporter Mobile": {
-        phone_number: document.getElementById('reporterMobile').value.trim()
-      },
-      "Immediate Action Taken": {
-        rich_text: [{ text: { content: document.getElementById('immediateAction').value.trim() } }]
-      },
-      "Crew Involved": {
-        rich_text: [{ text: { content: document.getElementById('crew').value.trim() } }]
-      },
-      "Weather Conditions": {
-        rich_text: [{ text: { content: document.getElementById('weather').value.trim() } }]
-      },
-      "Status": { select: { name: "Open" } },
-      "Confidentiality Level": { select: { name: "Just-Culture Protected" } },
-      "Date Reported": { date: { start: new Date().toISOString().split('T')[0] } }
+  document.getElementById("dateEvent").valueAsDate = new Date();
+  function openForm() {
+    var base = "https://airskydata.notion.site/737f3147b067494e80d3f1715db28d32?pvs=105";
+    var params = new URLSearchParams();
+    var fields = {
+      "Event Title (short)": document.getElementById("title").value.trim(),
+      "Mission ID": document.getElementById("missionId").value.trim(),
+      "Date of Event": document.getElementById("dateEvent").value,
+      "Location": document.getElementById("location").value.trim(),
+      "GPS Coordinates (any inside mission area)": document.getElementById("gps").value.trim(),
+      "Aircraft Involved": document.getElementById("aircraft").value,
+      "Weather Conditions-Obtain from Mission Plan in Dronedesk": document.getElementById("weather").value.trim(),
+      "Operating Area": document.getElementById("opArea").value,
+      "Phase of Flight": document.getElementById("phase").value,
+      "ICAO Classification": document.getElementById("icao").value,
+      "Severity Tier": document.getElementById("severity").value,
+      "Reported By": document.getElementById("reportedBy").value.trim(),
+      "Reporter Mobile": document.getElementById("reporterPhone").value.trim()
     };
-
-    // Optional selects
-    if (document.getElementById('aircraft').value)
-      properties["Aircraft Involved"] = { select: { name: document.getElementById('aircraft').value } };
-    if (document.getElementById('opArea').value)
-      properties["Operating Area"] = { select: { name: document.getElementById('opArea').value } };
-    if (document.getElementById('phase').value)
-      properties["Phase of Flight"] = { select: { name: document.getElementById('phase').value } };
-    if (selectedSeverity)
-      properties["Severity Tier"] = { select: { name: selectedSeverity } };
-    if (document.getElementById('icaoClass').value)
-      properties["ICAO Classification"] = { select: { name: document.getElementById('icaoClass').value } };
-
-    try {
-      const response = await fetch('https://api.notion.com/v1/pages', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer YOUR_NOTION_API_KEY,
-          'Content-Type': 'application/json',
-          'Notion-Version': '2022-06-28'
-        },
-        body: JSON.stringify({
-          parent: { database_id: 'ff7cfcb8-1773-4cde-a314-c2e84d9fbd17' },
-          properties: properties
-        })
-      });
-
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || 'Submission failed');
-      }
-
-      const result = await response.json();
-      const recordTitle = document.getElementById('eventTitle').value.trim();
-      document.getElementById('successId').textContent = `"${recordTitle}"`;
-      document.getElementById('successScreen').classList.add('visible');
-      document.getElementById('formContent').style.display = 'none';
-      document.querySelectorAll('.section-card').forEach((el, i) => { if (i > 0) el.style.display = 'none'; });
-      document.querySelector('.submit-wrap').style.display = 'none';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    } catch (err) {
-      document.getElementById('errorBanner').textContent = `Submission error: ${err.message}. Check your API key or network connection.`;
-      document.getElementById('errorBanner').classList.add('visible');
-      btn.classList.remove('loading');
-      btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg> Submit Safety Report`;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }
-
-  function resetForm() {
-    document.getElementById('successScreen').classList.remove('visible');
-    document.getElementById('formContent').style.display = '';
-    document.querySelectorAll('.section-card').forEach(el => el.style.display = '');
-    document.querySelector('.submit-wrap').style.display = '';
-    document.querySelectorAll('input, textarea').forEach(el => el.value = '');
-    document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
-    document.querySelectorAll('.sev-btn').forEach(el => el.classList.remove('active'));
-    selectedSeverity = '';
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('dateOfEvent').value = today;
+    Object.entries(fields).forEach(function(pair) { if (pair[1]) params.set(pair[0], pair[1]); });
+    window.open(base + "&" + params.toString(), "_blank");
   }
 </script>
 </body>
