@@ -1,0 +1,18 @@
+{
+  "appId": null,
+  "name": "Airskydata Public Widgets",
+  "repo": "widgets",
+  "platform": null,
+  "category": null,
+  "criticality": null,
+  "dataClass": null,
+  "retention": {},
+  "integrity": false,
+  "thirdPartyPersonalData": false,
+  "registerStatus": "sandbox",
+  "versionDisplay": null,
+  "tagFamilies": [],
+  "kvNamespaces": [],
+  "credentials": [],
+  "governingPage": null
+}
