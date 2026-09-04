@@ -1,0 +1,5 @@
+# Machine-local Claude Code permissions. Names paths and tool grants for
+# THIS clone on THIS machine; meaningless in any other clone and not a shared
+# setting. Untracked since it was created, but protected only by a machine-local
+# ignore until now — a fresh clone had no protection at all.
+.claude/settings.local.json
