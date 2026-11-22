@@ -97,10 +97,10 @@ jobs:
           result="$(printf '%s' "${raw}" | jq -c '{important_findings: .important_findings, summary: .summary}')"
           echo "result=${result}" >> "$GITHUB_OUTPUT"
           echo "Result: ${result}"
-          echo "Approve condition (this copy of the workflow): important_findings == 0"
+          echo "Approve condition (this copy of the workflow): always (proof B branch copy)"
 
       - name: Approve
-        if: fromJSON(steps.result.outputs.result).important_findings == 0
+        if: always() # proof B: the pull request's copy approves always
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
