@@ -1,0 +1,110 @@
+# Review gate proof: the sandbox form of the CFG-35 review workflow
+# (2027 ASD Dev System Overhaul - Phase 3 of 7 - Lane 1 of 3, Row 2;
+# ADR-0175 amendment 37; airskydata/asd-governance#348).
+# Rule: CFG-35
+#
+# Runs the base branch's copy (pull_request_target), only for pull requests
+# whose head repository is this repository. Never checks out, fetches,
+# installs or runs anything from the pull request: changed files and the diff
+# are read as data through gh api and gh pr diff. One approving review is
+# submitted only when the structured result records important_findings 0 as
+# a number; free text never decides.
+#
+# Stub mode (no ANTHROPIC_API_KEY secret): important_findings is 1 when the
+# changed files include proof/IMPORTANT, else 0.
+# Live mode (the secret present): anthropics/claude-code-action returns the
+# result through --json-schema as structured_output.
+name: Review Gate Proof
+
+on:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] CFG-35, ADR-0175 amendment 37: the base copy runs and no step checks out or runs pull request code
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+concurrency:
+  group: review-gate-proof-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    name: Review gate proof
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # read the pull request's changed files and diff through gh api
+      pull-requests: write # submit the one approving review
+    steps:
+      - name: Decide mode
+        id: mode
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "${ANTHROPIC_API_KEY}" ]; then live=true; else live=false; fi
+          echo "live=${live}" >> "$GITHUB_OUTPUT"
+          echo "${live}"
+
+      - name: Stub result
+        id: stub
+        if: steps.mode.outputs.live == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          files="$(gh api --paginate "repos/${REPO}/pulls/${PR}/files" --jq '.[].filename')"
+          printf 'Changed files:\n%s\n' "${files}"
+          if printf '%s\n' "${files}" | grep -qxF 'proof/IMPORTANT'; then n=1; else n=0; fi
+          result="$(jq -cn --argjson n "${n}" '{important_findings: $n, summary: (if $n > 0 then "Stub: proof/IMPORTANT is among the changed files" else "Stub: no Important finding" end)}')"
+          echo "result=${result}" >> "$GITHUB_OUTPUT"
+          echo "Stub result: ${result}"
+
+      - name: Live review
+        id: live
+        if: steps.mode.outputs.live == 'true'
+        uses: anthropics/claude-code-action@acfe7992852970efb4fee683d63d628e3e52df67 # v1.0.286
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # The job's own GITHUB_TOKEN (contents read, pull-requests write);
+          # no GitHub App token exchange.
+          github_token: ${{ github.token }}
+          prompt: |
+            Review pull request #${{ github.event.pull_request.number }} in ${{ github.repository }}.
+            Read it only with `gh pr diff ${{ github.event.pull_request.number }} -R ${{ github.repository }}`
+            and `gh pr view ${{ github.event.pull_request.number }} -R ${{ github.repository }}`.
+            Do not check out, fetch, install or run anything from the pull request.
+            Report Important findings only: a defect that would break behaviour, leak a
+            secret, or weaken security if merged. Style, naming and wording are not Important.
+            Return important_findings as the count of Important findings (0 when there are
+            none) and summary as one or two sentences naming them, or saying there are none.
+          claude_args: >-
+            --json-schema '{"type":"object","properties":{"important_findings":{"type":"integer","minimum":0},"summary":{"type":"string"}},"required":["important_findings","summary"],"additionalProperties":false}'
+            --allowedTools "Bash(gh pr diff:*),Bash(gh pr view:*)"
+            --max-turns 8
+
+      - name: Result
+        id: result
+        env:
+          LIVE: ${{ steps.mode.outputs.live }}
+          STUB_RESULT: ${{ steps.stub.outputs.result }}
+          LIVE_RESULT: ${{ steps.mode.outputs.live == 'true' && toJSON(fromJSON(steps.live.outputs.structured_output)) || '' }}
+        run: |
+          if [ "${LIVE}" = true ]; then raw="${LIVE_RESULT}"; else raw="${STUB_RESULT}"; fi
+          if ! printf '%s' "${raw}" | jq -e 'type == "object" and (.important_findings | type) == "number" and (.important_findings | floor) == .important_findings and .important_findings >= 0 and (.summary | type) == "string"' >/dev/null; then
+            echo "The result does not parse as {important_findings: integer, summary: string}; nothing is approved."
+            exit 1
+          fi
+          result="$(printf '%s' "${raw}" | jq -c '{important_findings: .important_findings, summary: .summary}')"
+          echo "result=${result}" >> "$GITHUB_OUTPUT"
+          echo "Result: ${result}"
+          echo "Approve condition (this copy of the workflow): important_findings == 0"
+
+      - name: Approve
+        if: fromJSON(steps.result.outputs.result).important_findings == 0
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          gh api "repos/${REPO}/pulls/${PR}/reviews" -f event=APPROVE -f "commit_id=${HEAD_SHA}" -f body="Review gate proof: no Important finding (CFG-35)"
