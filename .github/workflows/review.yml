@@ -1,0 +1,109 @@
+# Review workflow: the holder of the PROC-010 Reviewer role.
+# Rule: CFG-35 (role holder: pull_request_target, base-ref checkout only,
+#       approval only on a structured result with no Important finding)
+# Rule: CFG-38 (Claude API reached only through Workload Identity Federation;
+#       no ANTHROPIC_API_KEY or other static Claude credential)
+# Rule: CFG-41 (one self-contained file, the same content in every repository
+#       it runs in; no composite action or reusable workflow of another
+#       repository)
+# ADR-0175 decisions 8 and 27, amendments 37 and 39; airskydata/asd-governance#348.
+#
+# Runs the base branch's copy (pull_request_target), only for pull requests
+# whose head repository is this repository. The one checkout is the base
+# branch at the workspace root (no ref input), because the action needs a
+# git repository there (the action's docs/security.md, "Preferred"); nothing
+# fetches, checks out, installs or runs pull request content, and Claude
+# reads the pull request only through gh pr diff and gh pr view.
+#
+# One approving review is submitted on the head sha only when the structured
+# result validates and records important_findings 0; free text never
+# decides, a result that does not validate fails the job, and above 0
+# nothing is submitted. "Merge authorized" stays the human word of the
+# Release role.
+#
+# Credential (CFG-38): the job alone holds id-token write; the action
+# exchanges its GitHub OIDC token for a short-lived Anthropic token under the
+# federation rule and service account named by three organization variables
+# (identifiers, not secrets).
+#
+# actions/checkout v7.0.1 and anthropics/claude-code-action v1.0.286 (an
+# annotated tag, object cb5e706113afc5dc4f36cdcf5d784ca88f351823) pinned to
+# the commit SHAs behind their tags, read 2026-11-22.
+name: Review
+
+on:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] CFG-35, ADR-0175 amendment 39: the base copy runs, the only checkout is the base branch, and no step fetches, checks out or runs pull request code
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+concurrency:
+  group: review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    name: Review
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # the base-branch checkout, and the pull request diff through gh
+      pull-requests: write # read the pull request, submit the one approving review
+      id-token: write # the GitHub OIDC token exchanged under Workload Identity Federation (CFG-38)
+    steps:
+      - name: Check out the base branch (never the pull request)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # No ref input: the base branch at the workspace root. No step
+          # pushes with these credentials.
+          persist-credentials: false
+
+      - name: Review
+        id: review
+        uses: anthropics/claude-code-action@acfe7992852970efb4fee683d63d628e3e52df67 # v1.0.286
+        with:
+          anthropic_federation_rule_id: ${{ vars.ANTHROPIC_FEDERATION_RULE_ID }}
+          anthropic_organization_id: ${{ vars.ANTHROPIC_ORGANIZATION_ID }}
+          anthropic_service_account_id: ${{ vars.ANTHROPIC_SERVICE_ACCOUNT_ID }}
+          # The job's own GITHUB_TOKEN (contents read, pull-requests write);
+          # no GitHub App token exchange.
+          github_token: ${{ github.token }}
+          prompt: |
+            Review pull request #${{ github.event.pull_request.number }} in ${{ github.repository }}.
+            Read it only with `gh pr diff ${{ github.event.pull_request.number }} -R ${{ github.repository }}`
+            and `gh pr view ${{ github.event.pull_request.number }} -R ${{ github.repository }}`.
+            The working directory holds the base branch, not the pull request.
+            Do not check out, fetch, install or run anything from the pull request.
+            Report Important findings only: a defect that would break behaviour, leak a
+            secret, or weaken security if merged. Style, naming and wording are not Important.
+            Return important_findings as the count of Important findings (0 when there are
+            none) and summary as one or two sentences naming them, or saying there are none.
+          claude_args: >-
+            --json-schema '{"type":"object","properties":{"important_findings":{"type":"integer","minimum":0},"summary":{"type":"string"}},"required":["important_findings","summary"],"additionalProperties":false}'
+            --allowedTools "Bash(gh pr diff:*),Bash(gh pr view:*)"
+            --max-turns 8
+
+      - name: Result
+        id: result
+        env:
+          # The raw string; parsed by jq below, so an empty or malformed
+          # output fails this step rather than the expression.
+          STRUCTURED_OUTPUT: ${{ steps.review.outputs.structured_output }}
+        run: |
+          if ! printf '%s' "${STRUCTURED_OUTPUT}" | jq -e 'type == "object" and (keys == ["important_findings", "summary"]) and (.important_findings | type) == "number" and (.important_findings | floor) == .important_findings and .important_findings >= 0 and (.summary | type) == "string"' >/dev/null 2>&1; then
+            echo "The structured result does not parse as {important_findings: integer >= 0, summary: string}; nothing is approved."
+            exit 1
+          fi
+          result="$(printf '%s' "${STRUCTURED_OUTPUT}" | jq -c '{important_findings: .important_findings, summary: .summary}')"
+          echo "result=${result}" >> "$GITHUB_OUTPUT"
+          echo "Result: ${result}"
+
+      - name: Approve
+        if: fromJSON(steps.result.outputs.result).important_findings == 0
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          gh api "repos/${REPO}/pulls/${PR}/reviews" -f event=APPROVE -f "commit_id=${HEAD_SHA}" -f body="Review workflow: no Important finding (CFG-35)"
