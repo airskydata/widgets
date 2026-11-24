@@ -78,10 +78,11 @@ jobs:
             secret, or weaken security if merged. Style, naming and wording are not Important.
             Return important_findings as the count of Important findings (0 when there are
             none) and summary as one or two sentences naming them, or saying there are none.
+          # Rule: CFG-64 (fixed review turn cap, never scaled by diff size)
           claude_args: >-
             --json-schema '{"type":"object","properties":{"important_findings":{"type":"integer","minimum":0},"summary":{"type":"string"}},"required":["important_findings","summary"],"additionalProperties":false}'
             --allowedTools "Bash(gh pr diff:*),Bash(gh pr view:*)"
-            --max-turns 8
+            --max-turns 20
 
       - name: Result
         id: result
